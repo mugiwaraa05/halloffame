@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUCCICNT HALL OF FAME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-cyan: #00ffff;
+            --neon-purple: #9d00ff;
+            --dark-bg: #0a0a14;
+            --darker-bg: #050510;
+            --card-bg: rgba(20, 20, 40, 0.9);
+            --glow-pink: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+            --glow-cyan: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Full Height Banner */
+        .neon-banner {
+            height: 100vh;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: 
+                linear-gradient(rgba(0, 0, 10, 0.7), rgba(0, 0, 20, 0.9)),
+                url('./images/banner.jpg_large') center/cover no-repeat;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .neon-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-pink));
+            z-index: -1;
+            opacity: 0.15;
+            animation: pulse 8s infinite alternate;
+        }
+
+        .neon-banner h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            background: linear-gradient(to right, var(--neon-pink), var(--neon-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: var(--glow-pink);
+            animation: flicker 3s infinite alternate;
+        }
+
+        .neon-banner p {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        /* Neon Button */
+        .neon-btn {
+            padding: 15px 45px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            background: transparent;
+            color: var(--neon-cyan);
+            border: 3px solid var(--neon-cyan);
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: var(--glow-cyan);
+            z-index: 1;
+        }
+
+        .neon-btn:hover {
+            color: var(--dark-bg);
+            background: var(--neon-cyan);
+            box-shadow: 0 0 30px var(--neon-cyan);
+        }
+
+        /* Improved Scroll Indicator */
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 70px;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: var(--glow-cyan);
+        }
+
+        .scroll-down::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            animation: scrollBounce 2s infinite;
+            box-shadow: var(--glow-cyan);
+        }
+
+        /* Matrix Transition Overlay */
+        .matrix-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .matrix-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            color: var(--neon-cyan);
+            text-shadow: var(--glow-cyan);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            animation: matrixGlitch 0.5s infinite alternate;
+        }
+
+        /* Hall of Fame Section */
+        .hall-of-fame {
+            padding: 80px 20px;
+            position: relative;
+            background: var(--darker-bg);
+            border-top: 1px solid var(--neon-pink);
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+
+        .hall-of-fame.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            color: var(--neon-pink);
+            text-shadow: var(--glow-pink);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: rgba(255,255,255,0.8);
+        }
+
+        
+        .neon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .contribution-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border-left: 4px solid var(--neon-pink);
+            border-right: 4px solid var(--neon-cyan);
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.215, 0.61, 0.355, 1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .hall-of-fame.active .contribution-card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .contribution-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan));
+            animation: borderGlow 3s infinite alternate;
+        }
+
+        .contribution-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+        }
+
+        .contribution-card:hover::before {
+            animation: borderGlowFast 1.5s infinite alternate;
+        }
+
+        .card-header {
+            padding: 20px;
+            background: linear-gradient(to right, rgba(255,0,255,0.1), rgba(0,255,255,0.1));
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-cyan);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+            line-height: 1.4;
+        }
+
+        .card-date {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-date::before {
+            content: '🕒';
+            margin-right: 6px;
+            font-size: 0.9rem;
+        }
+
+        .card-content {
+            padding: 20px;
+            font-size: 1rem;
+            line-height: 1.7;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-text {
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            border: 2px solid var(--neon-pink);
+            box-shadow: var(--glow-pink);
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .author-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .author-name {
+            font-size: 0.95rem;
+            color: var(--neon-cyan);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .author-handle {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .twitter-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(0, 206, 201, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-cyan);
+        }
+
+        .twitter-link:hover {
+            background: var(--neon-cyan);
+            color: var(--dark-bg);
+            transform: translateY(-2px);
+        }
+
+        .twitter-icon {
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+
+        /* Staggered Animations */
+        .contribution-card:nth-child(1) { transition-delay: 0.1s; }
+        .contribution-card:nth-child(2) { transition-delay: 0.2s; }
+        .contribution-card:nth-child(3) { transition-delay: 0.3s; }
+        .contribution-card:nth-child(4) { transition-delay: 0.4s; }
+        .contribution-card:nth-child(5) { transition-delay: 0.5s; }
+
+        /* Animations */
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: var(--glow-pink);
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0.1;
+            }
+        }
+
+        @keyframes scrollBounce {
+            0% {
+                opacity: 1;
+                top: 10px;
+            }
+            100% {
+                opacity: 0;
+                top: 40px;
+            }
+        }
+
+        @keyframes matrixGlitch {
+            0% {
+                text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+            }
+            20% {
+                text-shadow: 0 0 15px var(--neon-cyan), 0 0 30px var(--neon-cyan);
+            }
+            40% {
+                text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan);
+            }
+            60% {
+                text-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan);
+            }
+            80% {
+                text-shadow: 0 0 8px var(--neon-cyan), 0 0 16px var(--neon-cyan);
+            }
+            100% {
+                text-shadow: 0 0 12px var(--neon-cyan), 0 0 24px var(--neon-cyan);
+            }
+        }
+
+        @keyframes borderGlow {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes borderGlowFast {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .neon-banner {
+                min-height: 100vh;
+                padding: 20px;
+            }
+            
+            .neon-banner h1 {
+                font-size: 2.8rem;
+                letter-spacing: 3px;
+            }
+            
+            .neon-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+                padding: 0 15px;
+            }
+            
+            .section-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .section-header p {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .neon-banner h1 {
+                font-size: 2.2rem;
+            }
+            
+            .neon-banner p {
+                font-size: 1.1rem;
+            }
+            
+            .neon-btn {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+            
+            .matrix-text {
+                font-size: 1.5rem;
+            }
+            
+            .card-content {
+                padding: 15px 20px;
+            }
+            
+            .card-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .twitter-link {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Full Height Neon Banner -->
+    <section class="neon-banner">
+        <h1>HALL OF FAME</h1>
+        <p>Celebrating the most electrifying contributions in our community</p>
+        <button class="neon-btn" id="view-hof">ENTER THE MATRIX</button>
+        <div class="scroll-down" id="scroll-down"></div>
+    </section>
+
+    <!-- Matrix Transition Overlay -->
+    <div class="matrix-transition" id="matrix-transition">
+        <div class="matrix-text">DOWNLOADING CONTRIBUTIONS...</div>
+    </div>
+
+    <!-- Hall of Fame Section -->
+    <section class="hall-of-fame" id="hall-of-fame">
+        <div class="section-header">
+            <h2>TODAY'S TOP CONTRIBUTIONS</h2>
+            <p>The most impactful work from our community this week</p>
+        </div>
+        
+        <div class="neon-grid" id="contributions-container">
+            <!-- Cards will be added dynamically -->
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample data - replace with your actual content
+            const contributions = [
+                {
+                    title: "AN OBJECTIVE ANALYSIS OF CLOBS ON BLOBS WITH SP1",
+                    date: "July 3, 2025",
+                    text: "A real voice in all the noise. Opened with the effects of existing trading systems and the failed promises of solutions that haven't lived up to expectations.",
+                    author: "Nik Nurenberg",
+                    handle: "@RaizeThatQ",
+                    twitterLink: "https://x.com/RaizeThatQ/status/1940553452725456924",
+                    avatar: "./images/avatars/Nik.jpg"
+                },
+                {
+                    title: "INTO THE SP1 VERSE",
+                    date: "July 2, 2025",
+                    text: "True love, an expression of passion also backable with proofs and zk purpose that's transparent and verifiable.",
+                    author: "Coziii Nazork",
+                    handle: "@only1coziii",
+                    twitterLink: "https://x.com/only1coziii/status/1940339983228829897",
+                    avatar: "./images/avatars/Coziii.jpg"
+                },
+                {
+                    title: "PROVE OR DIE MODE",
+                    date: "March 8, 2025",
+                    text: "Vision and vibes by breezy, a very peculiar never seen before art form that pushes boundaries.",
+                    author: "Breezy 4L",
+                    handle: "@breezyjpg",
+                    twitterLink: "https://x.com/breezyjpg/status/1898160500526998000",
+                    avatar: "./images/avatars/Breezy.jpg"
+                },
+                {
+                    title: "DEFI IS GETTING AN UPGRADE - CLOBS ON BLOBS",
+                    date: "July 2, 2025",
+                    text: "Not only does this explain the Clobs on blobs with sp1 well, it makes references and comparisons that highlight the trading terrain shift happening now.",
+                    author: "Qurool",
+                    handle: "@Qurool13",
+                    twitterLink: "https://x.com/Qurool13/status/1940530978063024351",
+                    avatar: "./images/avatars/Qurool.jpg"
+                },
+                {
+                    title: "LANDSCAPE CAKE",
+                    date: "July 3, 2025",
+                    text: "Hand-crafted succinct cake that beautifully represents the intersection of technology and art in our community.",
+                    author: "Neovault",
+                    handle: "@Dmhzcsze",
+                    twitterLink: "https://x.com/Dmhzcsze/status/1940254126899962317",
+                    avatar: "./images/avatars/Neovault.jpg"
+                }
+            ];
+
+            // Scroll down button
+            document.getElementById('scroll-down').addEventListener('click', function() {
+                document.getElementById('hall-of-fame').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            });
+
+            // View Hall of Fame button
+            document.getElementById('view-hof').addEventListener('click', function() {
+                const matrixTransition = document.getElementById('matrix-transition');
+                const hofSection = document.getElementById('hall-of-fame');
+                
+                // Show matrix transition
+                matrixTransition.style.opacity = '1';
+                matrixTransition.style.pointerEvents = 'auto';
+                
+                // After transition, show content
+                setTimeout(() => {
+                    // Populate cards
+                    const container = document.getElementById('contributions-container');
+                    container.innerHTML = '';
+                    
+                    contributions.forEach((contribution, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'contribution-card';
+                        card.style.transitionDelay = `${index * 0.1}s`;
+                        
+                        card.innerHTML = `
+                            <div class="card-header">
+                                <div class="card-title">${contribution.title}</div>
+                                <div class="card-date">${contribution.date}</div>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-text">
+                                    <p>${contribution.text}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="card-author">
+                                        <img src="${contribution.avatar}" class="author-avatar" alt="${contribution.author}">
+                                        <div class="author-info">
+                                            <span class="author-name">${contribution.author}</span>
+                                            <span class="author-handle">${contribution.handle}</span>
+                                        </div>
+                                    </div>
+                                    <a href="${contribution.twitterLink}" class="twitter-link" target="_blank">
+                                        <span class="twitter-icon">→</span>
+                                        <span>View</span>
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                        
+                        container.appendChild(card);
+                    });
+                    
+                    // Show hall of fame section
+                    hofSection.style.display = 'block';
+                    
+                    // Trigger animation
+                    setTimeout(() => {
+                        hofSection.classList.add('active');
+                    }, 50);
+                    
+                    // Hide matrix transition
+                    setTimeout(() => {
+                        matrixTransition.style.opacity = '0';
+                        matrixTransition.style.pointerEvents = 'none';
+                    }, 800);
+                    
+                    // Scroll to section
+                    setTimeout(() => {
+                        hofSection.scrollIntoView({ behavior: 'smooth' });
+                    }, 1000);
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>
