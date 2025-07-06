@@ -506,6 +506,25 @@
                 justify-content: center;
             }
         }
+        .pagination-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 50px;
+    padding: 20px;
+}
+
+.page-info {
+    font-size: 1.1rem;
+    color: var(--neon-cyan);
+    text-shadow: var(--glow-cyan);
+}
+
+#load-more {
+    padding: 12px 30px;
+    font-size: 1.1rem;
+}
     </style>
 </head>
 <body>
@@ -532,135 +551,228 @@
         <div class="neon-grid" id="contributions-container">
             <!-- Cards will be added dynamically -->
         </div>
+        <div class="pagination-controls">
+    <button id="load-more" class="neon-btn">LOAD MORE</button>
+    <div class="page-info">Showing <span id="shown-count">5</span> of <span id="total-count">15</span></div>
+</div>
     </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Sample data - replace with your actual content
-            const contributions = [
-                {
-                    title: "AN OBJECTIVE ANALYSIS OF CLOBS ON BLOBS WITH SP1",
-                    date: "July 3, 2025",
-                    text: "A real voice in all the noise. Opened with the effects of existing trading systems and the failed promises of solutions that haven't lived up to expectations.",
-                    author: "Nik Nurenberg",
-                    handle: "@RaizeThatQ",
-                    twitterLink: "https://x.com/RaizeThatQ/status/1940553452725456924",
-                    avatar: "./images/avatars/Nik.jpg"
-                },
-                {
-                    title: "INTO THE SP1 VERSE",
-                    date: "July 2, 2025",
-                    text: "True love, an expression of passion also backable with proofs and zk purpose that's transparent and verifiable.",
-                    author: "Coziii Nazork",
-                    handle: "@only1coziii",
-                    twitterLink: "https://x.com/only1coziii/status/1940339983228829897",
-                    avatar: "./images/avatars/Coziii.jpg"
-                },
-                {
-                    title: "PROVE OR DIE MODE",
-                    date: "March 8, 2025",
-                    text: "Vision and vibes by breezy, a very peculiar never seen before art form that pushes boundaries.",
-                    author: "Breezy 4L",
-                    handle: "@breezyjpg",
-                    twitterLink: "https://x.com/breezyjpg/status/1898160500526998000",
-                    avatar: "./images/avatars/Breezy.jpg"
-                },
-                {
-                    title: "DEFI IS GETTING AN UPGRADE - CLOBS ON BLOBS",
-                    date: "July 2, 2025",
-                    text: "Not only does this explain the Clobs on blobs with sp1 well, it makes references and comparisons that highlight the trading terrain shift happening now.",
-                    author: "Qurool",
-                    handle: "@Qurool13",
-                    twitterLink: "https://x.com/Qurool13/status/1940530978063024351",
-                    avatar: "./images/avatars/Qurool.jpg"
-                },
-                {
-                    title: "LANDSCAPE CAKE",
-                    date: "July 3, 2025",
-                    text: "Hand-crafted succinct cake that beautifully represents the intersection of technology and art in our community.",
-                    author: "Neovault",
-                    handle: "@Dmhzcsze",
-                    twitterLink: "https://x.com/Dmhzcsze/status/1940254126899962317",
-                    avatar: "./images/avatars/Neovault.jpg"
-                }
-            ];
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Sample data - expanded to 15 items for pagination
+        const contributions = [
+            {
+                title: "AN OBJECTIVE ANALYSIS OF CLOBS ON BLOBS WITH SP1",
+                date: "July 3, 2025",
+                text: "A real voice in all the noise. Opened with the effects of existing trading systems and the failed promises of solutions that haven't lived up to expectations.",
+                author: "Nik Nurenberg",
+                handle: "@RaizeThatQ",
+                twitterLink: "https://x.com/RaizeThatQ/status/1940553452725456924",
+                avatar: "./images/avatars/Nik.jpg"
+            },
+            {
+                title: "INTO THE SP1 VERSE",
+                date: "July 2, 2025",
+                text: "True love, an expression of passion also backable with proofs and zk purpose that's transparent and verifiable.",
+                author: "Coziii Nazork",
+                handle: "@only1coziii",
+                twitterLink: "https://x.com/only1coziii/status/1940339983228829897",
+                avatar: "./images/avatars/Coziii.jpg"
+            },
+            {
+                title: "PROVE OR DIE MODE",
+                date: "March 8, 2025",
+                text: "Vision and vibes by breezy, a very peculiar never seen before art form that pushes boundaries.",
+                author: "Breezy 4L",
+                handle: "@breezyjpg",
+                twitterLink: "https://x.com/breezyjpg/status/1898160500526998000",
+                avatar: "./images/avatars/Breezy.jpg"
+            },
+            {
+                title: "DEFI IS GETTING AN UPGRADE - CLOBS ON BLOBS",
+                date: "July 2, 2025",
+                text: "Not only does this explain the Clobs on blobs with sp1 well, it makes references and comparisons that highlight the trading terrain shift happening now.",
+                author: "Qurool",
+                handle: "@Qurool13",
+                twitterLink: "https://x.com/Qurool13/status/1940530978063024351",
+                avatar: "./images/avatars/Qurool.jpg"
+            },
+            {
+                title: "LANDSCAPE CAKE",
+                date: "July 3, 2025",
+                text: "Hand-crafted succinct cake that beautifully represents the intersection of technology and art in our community.",
+                author: "Neovault",
+                handle: "@Dmhzcsze",
+                twitterLink: "https://x.com/Dmhzcsze/status/1940254126899962317",
+                avatar: "./images/avatars/Neovault.jpg"
+            },
+            // Additional contributions (6-10)
+            {
+                title: "SP1 BRIDGES EVERYTHING",
+                date: "July 3, 2025",
+                text: "Best across/succinct breakdown .. clear, non-technical, not excessive and non digressional deserves a spot on my book",
+                author: "ZhugeLiang",
+                handle: "@ZhugeLyang",
+                twitterLink: "https://x.com/ZhugeLyang/status/1940709448374198615",
+                avatar: "./images/avatars/zhuge.jpg"
+            },
+            {
+                title: "MAGNIFICENT ICE SCULPTURE",
+                date: "July 3, 2025",
+                text: "Four guys spent 1k$ on an ice Sculpture, it shows Yinger holding the succinct logo ….  the effort , the intention  the sacrifice and execution all are unmatched , this is extraodinary community love",
+                author: "Praetor",
+                handle: "@FourVork",
+                twitterLink: "https://x.com/FourVork/status/1940903723498352987",
+                avatar: "./images/avatars/praetor.jpg"
+            },
+            {
+                title: "STAGE 2.5 BANGER PROMOTONAL ART",
+                date: "July 5, 2025",
+                text: "This art resonates a wholesome experience, on its own, like checking in to a 10 star vacation resort that’s only second to paradise in terms of experience … This art helped visualize this emotion and it deserves a spot with the greats",
+                author: "S-VAN",
+                handle: "@Mobolaji97",
+                twitterLink: "https://x.com/Mobolaji97/status/1941453827720290434",
+                avatar: "./images/avatars/svan.jpg"
+            },
+            {
+                title: "CREATIVE- A SUCCINCT KEY CHAIN",
+                date: "July 4, 2025",
+                text: "Best keychain for succinct , this should be branded and addded to the merch collection if there’s any",
+                author: "Heyflo",
+                handle: "@heyflo_yd",
+                twitterLink: "https://x.com/heyflo_yd/status/1941045055390990700",
+                avatar: "./images/avatars/heyflo.jpg"
+            },
+            {
+                title: "COMMUNITY HUB",
+                date: "July 3, 2025",
+                text: "Mugiwara’s  best website in my opinion , has a succinct fortune teller , succinct mosaic portrait of Uma Roy and the community, quiz, best succinct quotes, collection off all the games he made for succinct",
+                author: "Mugiwara",
+                handle: "@vs_ccb",
+                twitterLink: "https://x.com/vs_ccb/status/1940661849025864055",
+                avatar: "./images/avatars/mugi.jpg"
+            },
+        ];
 
-            // Scroll down button
-            document.getElementById('scroll-down').addEventListener('click', function() {
-                document.getElementById('hall-of-fame').scrollIntoView({ 
-                    behavior: 'smooth' 
-                });
-            });
+        // Set total count
+        document.getElementById('total-count').textContent = 10;
 
-            // View Hall of Fame button
-            document.getElementById('view-hof').addEventListener('click', function() {
-                const matrixTransition = document.getElementById('matrix-transition');
-                const hofSection = document.getElementById('hall-of-fame');
-                
-                // Show matrix transition
-                matrixTransition.style.opacity = '1';
-                matrixTransition.style.pointerEvents = 'auto';
-                
-                // After transition, show content
-                setTimeout(() => {
-                    // Populate cards
-                    const container = document.getElementById('contributions-container');
-                    container.innerHTML = '';
-                    
-                    contributions.forEach((contribution, index) => {
-                        const card = document.createElement('div');
-                        card.className = 'contribution-card';
-                        card.style.transitionDelay = `${index * 0.1}s`;
-                        
-                        card.innerHTML = `
-                            <div class="card-header">
-                                <div class="card-title">${contribution.title}</div>
-                                <div class="card-date">${contribution.date}</div>
-                            </div>
-                            <div class="card-content">
-                                <div class="card-text">
-                                    <p>${contribution.text}</p>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="card-author">
-                                        <img src="${contribution.avatar}" class="author-avatar" alt="${contribution.author}">
-                                        <div class="author-info">
-                                            <span class="author-name">${contribution.author}</span>
-                                            <span class="author-handle">${contribution.handle}</span>
-                                        </div>
-                                    </div>
-                                    <a href="${contribution.twitterLink}" class="twitter-link" target="_blank">
-                                        <span class="twitter-icon">→</span>
-                                        <span>View</span>
-                                    </a>
-                                </div>
-                            </div>
-                        `;
-                        
-                        container.appendChild(card);
-                    });
-                    
-                    // Show hall of fame section
-                    hofSection.style.display = 'block';
-                    
-                    // Trigger animation
-                    setTimeout(() => {
-                        hofSection.classList.add('active');
-                    }, 50);
-                    
-                    // Hide matrix transition
-                    setTimeout(() => {
-                        matrixTransition.style.opacity = '0';
-                        matrixTransition.style.pointerEvents = 'none';
-                    }, 800);
-                    
-                    // Scroll to section
-                    setTimeout(() => {
-                        hofSection.scrollIntoView({ behavior: 'smooth' });
-                    }, 1000);
-                }, 1500);
+        // Scroll down button
+        document.getElementById('scroll-down').addEventListener('click', function() {
+            document.getElementById('hall-of-fame').scrollIntoView({ 
+                behavior: 'smooth' 
             });
         });
-    </script>
+
+        // View Hall of Fame button
+        document.getElementById('view-hof').addEventListener('click', function() {
+            const matrixTransition = document.getElementById('matrix-transition');
+            const hofSection = document.getElementById('hall-of-fame');
+            
+            // Show matrix transition
+            matrixTransition.style.opacity = '1';
+            matrixTransition.style.pointerEvents = 'auto';
+            
+            // After transition, show content
+            setTimeout(() => {
+                // Initial load (first 5 items)
+                loadContributions(0, 5);
+                
+                // Show hall of fame section
+                hofSection.style.display = 'block';
+                
+                // Trigger animation
+                setTimeout(() => {
+                    hofSection.classList.add('active');
+                }, 50);
+                
+                // Hide matrix transition
+                setTimeout(() => {
+                    matrixTransition.style.opacity = '0';
+                    matrixTransition.style.pointerEvents = 'none';
+                }, 800);
+                
+                // Scroll to section
+                setTimeout(() => {
+                    hofSection.scrollIntoView({ behavior: 'smooth' });
+                }, 1000);
+            }, 1500);
+        });
+
+        // Load More button
+        document.getElementById('load-more').addEventListener('click', function() {
+            const currentCount = parseInt(document.getElementById('shown-count').textContent);
+            const totalCount = parseInt(document.getElementById('total-count').textContent);
+            
+            if (currentCount < totalCount) {
+                loadContributions(currentCount, 5);
+                document.getElementById('shown-count').textContent = Math.min(currentCount + 5, totalCount);
+                
+                // Disable button if we've shown all
+                if (currentCount + 5 >= totalCount) {
+                    this.disabled = true;
+                    this.textContent = "ALL LOADED";
+                    this.style.opacity = "0.7";
+                }
+                
+                // Smooth scroll to newly loaded items
+                setTimeout(() => {
+                    const cards = document.querySelectorAll('.contribution-card');
+                    if (cards.length > 5) {
+                        cards[cards.length - 5].scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'nearest' 
+                        });
+                    }
+                }, 300);
+            }
+        });
+
+        function loadContributions(startIndex, count) {
+            const container = document.getElementById('contributions-container');
+            const endIndex = Math.min(startIndex + count, contributions.length);
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                const contribution = contributions[i];
+                const card = document.createElement('div');
+                card.className = 'contribution-card';
+                card.style.transitionDelay = `${(i % 5) * 0.1}s`;
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-title">${contribution.title}</div>
+                        <div class="card-date">${contribution.date}</div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-text">
+                            <p>${contribution.text}</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="card-author">
+                                <img src="${contribution.avatar}" class="author-avatar" alt="${contribution.author}">
+                                <div class="author-info">
+                                    <span class="author-name">${contribution.author}</span>
+                                    <span class="author-handle">${contribution.handle}</span>
+                                </div>
+                            </div>
+                            <a href="${contribution.twitterLink}" class="twitter-link" target="_blank">
+                                <span class="twitter-icon">→</span>
+                                <span>View</span>
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+                
+                // Trigger animation
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 50);
+            }
+        }
+    });
+</script>
 </body>
 </html>
